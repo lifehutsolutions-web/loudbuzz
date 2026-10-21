@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Photo Booth | LoudBuzz</title>
+<link rel="icon" href="/assets/icon.png"><link rel="stylesheet" href="/assets/booth.css">
+</head><body>
+<div id="stage">
+  <video id="video" autoplay playsinline muted></video>
+  <canvas id="live"></canvas>
+  <canvas id="shot"></canvas>
+  <video id="play" playsinline muted loop></video>
+  <img id="frame" alt="">
+  <div id="msg"></div>
+  <div id="count"></div>
+  <div id="rec">00:00</div>
+</div>
+<div class="modes"><button id="mPhoto" class="on">📸 Photo</button><button id="mVideo">🎬 Reel</button></div>
+<div class="bar">
+  <button id="flip" class="alt round" aria-label="Switch camera"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l1.5-2h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><path d="M9.1 12.4a3.2 3.2 0 0 1 5.5-1.2"/><path d="M14.9 9.3v2.1h-2.1"/><path d="M14.9 14.6a3.2 3.2 0 0 1-5.5 1.2"/><path d="M9.1 17.7v-2.1h2.1"/></svg></button>
+  <button id="mic" class="alt round hide" aria-label="Sound"></button>
+  <button id="snap" disabled>📸 Take Photo</button>
+  <button id="record" class="hide" disabled>● Record</button>
+  <button id="stop" class="hide">■ Stop</button>
+  <button id="retake" class="alt hide">Retake</button>
+  <button id="save" class="hide">⬇ Save</button>
+  <button id="share" class="alt hide">Share</button>
+</div>
+<div id="toast"></div>
+<a class="by" href="/">Developed by <img src="/assets/logo.png" alt="LoudBuzz"></a>
+<script src="/assets/booth.js"></script></body></html>
