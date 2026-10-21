@@ -3,7 +3,7 @@
 var $=function(i){return document.getElementById(i)};
 var video=$('video'),shot=$('shot'),play=$('play'),frame=$('frame'),count=$('count'),msg=$('msg'),toast=$('toast'),recBadge=$('rec'),
 flip=$('flip'),mic=$('mic'),snap=$('snap'),record=$('record'),stop=$('stop'),retake=$('retake'),save=$('save'),share=$('share'),mPhoto=$('mPhoto'),mVideo=$('mVideo');
-var MAX_SEC=15,REC_W=1080,REC_H=1920,facing='user',micOn=true;
+var MAX_SEC=15,REC_W=720,REC_H=1280,facing='user',micOn=true;
 var stream=null,mode='photo',blob=null,fname='',busy=false,recording=false,recorder=null,chunks=[],raf=0,timer=0,t0=0,mime='',playUrl='';
 
 function say(t){toast.textContent=t||''}
@@ -97,16 +97,19 @@ record.onclick=async function(){
   count.style.display='none';
   var cv=document.createElement('canvas');cv.width=REC_W;cv.height=REC_H;
   var c=cv.getContext('2d');
-  function loop(){drawTo(c,REC_W,REC_H);raf=requestAnimationFrame(loop)}
+  var fc=document.createElement('canvas');fc.width=REC_W;fc.height=REC_H;var fx=fc.getContext('2d');fx.imageSmoothingQuality='high';fx.drawImage(frame,0,0,REC_W,REC_H);
+  var vfc=!!video.requestVideoFrameCallback,lid=0;
+  function loop(){drawVideo(c,REC_W,REC_H,false);c.drawImage(fc,0,0);lid=vfc?video.requestVideoFrameCallback(loop):requestAnimationFrame(loop)}
+  function stopLoop(){if(vfc)video.cancelVideoFrameCallback(lid);else cancelAnimationFrame(lid)}
   loop();
   chunks=[];
   var cs=cv.captureStream(30);
   if(aStream)aStream.getAudioTracks().forEach(function(t){cs.addTrack(t)});
-  try{recorder=new MediaRecorder(cs,{mimeType:mime,videoBitsPerSecond:8000000,audioBitsPerSecond:128000})}
-  catch(e){if(aStream)aStream.getTracks().forEach(function(t){t.stop()});cancelAnimationFrame(raf);busy=false;record.disabled=false;say('Could not start recording on this browser.');return}
+  try{recorder=new MediaRecorder(cs,{mimeType:mime,videoBitsPerSecond:5000000,audioBitsPerSecond:128000})}
+  catch(e){if(aStream)aStream.getTracks().forEach(function(t){t.stop()});stopLoop();busy=false;record.disabled=false;say('Could not start recording on this browser.');return}
   recorder.ondataavailable=function(e){if(e.data&&e.data.size)chunks.push(e.data)};
   recorder.onstop=function(){
-    cancelAnimationFrame(raf);clearInterval(timer);
+    stopLoop();clearInterval(timer);
     if(aStream)aStream.getTracks().forEach(function(t){t.stop()});
     var base=mime.split(';')[0],ext=base==='video/mp4'?'mp4':'webm';
     blob=new Blob(chunks,{type:base});fname='Doras-Shopyee-Reel-'+Date.now()+'.'+ext;
@@ -149,7 +152,7 @@ share.onclick=async function(){
   }else say('Sharing is not supported on this browser. Please use Save.');
 };
 window.addEventListener('pagehide',function(){if(stream)stream.getTracks().forEach(function(t){t.stop()})});
-var live=$('live'),lc=live.getContext('2d');live.width=1080;live.height=1920;
+var live=$('live'),lc=live.getContext('2d');live.width=540;live.height=960;
 (function lp(){drawVideo(lc,live.width,live.height,facing==='user');requestAnimationFrame(lp)})();
 async function loadBrand(){
   var b=(location.pathname.split('/').filter(Boolean)[0]||'').toLowerCase().replace(/[^a-z0-9_-]/g,'');
